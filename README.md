@@ -1,5 +1,5 @@
 # demoapp
-This is a demo ASP.NET Core Web Application project for my article on Medium "Deploy Your ASP.NET Core Web Application to Azure Kubernetes Service with Azure DevOps".
+A demo ASP.NET Core Web Application project for my article on Medium "Deploy Your ASP.NET Core Web Application to Azure Kubernetes Service with Azure DevOps".
 
 Documentation: 
 
