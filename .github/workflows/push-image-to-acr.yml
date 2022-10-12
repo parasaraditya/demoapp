@@ -1,0 +1,53 @@
+name: push-image-to-acr
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '3566f872-0f60-4d35-bf6a-d000661d11cb'
+  imageRepository: 'TM-Cloudapps/demoapp'
+  containerRegistry: 'aditestacr.azurecr.io'
+  dockerfilePath: 'parasaraditya/demoapp/DemoApp/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+steps:
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: DemoApp/Manifest
+    Contents: deployment.yml
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+steps:
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+
